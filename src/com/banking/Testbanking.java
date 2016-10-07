@@ -1,107 +1,69 @@
 package com.banking;
 
+import java.text.NumberFormat;
+
 public class Testbanking {
 
 	public static void main(String[] args) {
+//		NumberFormat currency_format = NumberFormat.getCurrencyInstance();
 		Bank bank = new Bank();
 		Customer customer;
-		Account account;
 
-		//
-		// Create bank customers and their accounts
-		//
-
-		System.out.println("Creating the customer Jane Smith.");
+		// Create several customers and their accounts
 		bank.addCustomer("Jane", "Simms");
-		customer=bank.getCustomer(0);
-		System.out.println("Creating her Savings Account with a 500.00 balance and 3% interest.");
-		account=new SavingAccount(500.00, 0.03);
-		customer.setAccount(account);
+		customer = bank.getCustomer(0);
+		customer.addAccount(new SavingAccount(500.00, 0.05));
+		customer.addAccount(new CheckingAccount(200.00, 400.00));
 
-		System.out.println("Creating the customer Owen Bryant.");
 		bank.addCustomer("Owen", "Bryant");
 		customer = bank.getCustomer(1);
-		System.out.println("Creating his Checking Account with a 500.00 balance and no overdraft protection.");
-		account=new CheckingAccount(500.00,0);
-		customer.setAccount(account);
-		
-		System.out.println("Creating the customer Tim Soley.");
+		customer.addAccount(new CheckingAccount(200.00));
+
 		bank.addCustomer("Tim", "Soley");
 		customer = bank.getCustomer(2);
-		System.out.println("Creating his Checking Account with a 500.00 balance and 500.00 in overdraft protection.");
-		account=new CheckingAccount(500.00,500.00);
-		customer.setAccount(account);
-		
-		System.out.println("Creating the customer Maria Soley.");
+		customer.addAccount(new SavingAccount(1500.00, 0.05));
+		customer.addAccount(new CheckingAccount(200.00));
+
 		bank.addCustomer("Maria", "Soley");
 		customer = bank.getCustomer(3);
-		System.out.println("Maria shares her Checking Account with her husband Tim.");
-		customer.setAccount(bank.getCustomer(2).getAccount());
-		customer.setAccount(account);
-		
-		System.out.println();
+		// Maria and Tim have a shared checking account
+		customer.addAccount(bank.getCustomer(2).getAccount(1));
+		customer.addAccount(new SavingAccount(150.00, 0.05));
 
-		//
-		// Demonstrate behavior of various account types
-		//
+		// Generate a report
+		System.out.println("\t\t\tCUSTOMERS REPORT");
+		System.out.println("\t\t\t================");
 
-		// Test a standard Savings Account
-		System.out.println("Retrieving the customer Jane Smith with her savings account.");
-		customer = bank.getCustomer(0);
-		account = customer.getAccount();
-		// Perform some account transactions
-		System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-		System.out.println("Deposit 22.50: " + account.deposit(22.50));
-		System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-		System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-		// Print out the final account balance
-		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName()
-				+ "] has a balance of " + account.getBalance());
+		for (int cust_idx = 0; cust_idx < bank.getNumOfCustomers(); cust_idx++) {
+			customer = bank.getCustomer(cust_idx);
 
-		System.out.println();
+			System.out.println();
+			System.out.println("Customer: " + customer.getLastName() + ", " + customer.getFirstName());
 
-		// Test a Checking Account w/o overdraft protection
-		System.out
-				.println("Retrieving the customer Owen Bryant with his checking account with no overdraft protection.");
-		customer = bank.getCustomer(1);
-		account = customer.getAccount();
-		// Perform some account transactions
-		System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-		System.out.println("Deposit 22.50: " + account.deposit(22.50));
-		System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-		System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-		// Print out the final account balance
-		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName()
-				+ "] has a balance of " + account.getBalance());
+			for (int acct_idx = 0; acct_idx < customer.getNumOfAccounts(); acct_idx++) {
+				Account account = customer.getAccount(acct_idx);
+				String account_type = "";
 
-		System.out.println();
-
-		// Test a Checking Account with overdraft protection
-		System.out
-				.println("Retrieving the customer Tim Soley with his checking account that has overdraft protection.");
-		customer = bank.getCustomer(2);
-		account = customer.getAccount();
-		// Perform some account transactions
-		System.out.println("Withdraw 150.00: " + account.withdraw(150.00));
-		System.out.println("Deposit 22.50: " + account.deposit(22.50));
-		System.out.println("Withdraw 47.62: " + account.withdraw(47.62));
-		System.out.println("Withdraw 400.00: " + account.withdraw(400.00));
-		// Print out the final account balance
-		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName()
-				+ "] has a balance of " + account.getBalance());
-
-		System.out.println();
-
-		// Test a Checking Account with overdraft protection
-		System.out.println("Retrieving the customer Maria Soley with her joint checking account with husband Tim.");
-		customer = bank.getCustomer(3);
-		account = customer.getAccount();
-		// Perform some account transactions
-		System.out.println("Deposit 150.00: " + account.deposit(150.00));
-		System.out.println("Withdraw 750.00: " + account.withdraw(750.00));
-		// Print out the final account balance
-		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName()
-				+ "] has a balance of " + account.getBalance());
+				// Determine the account type
+				/***
+				 * Step 1: Use the instanceof operator to test what type of
+				 * account we have and set account_type to an appropriate value,
+				 * such as "Savings Account" or "Checking Account".
+				 ***/
+				if (account instanceof SavingAccount) {
+					account_type="\tSaving Account :";
+				} else {
+					account_type="\tChecking Account :";
+				}
+				// Print the current balance of the account
+				/***
+				 * Step 2: Print out the type of account and the balance. Feel
+				 * free to use the currency_format formatter to generate a
+				 * "currency string" for the balance.
+				 ***/
+				System.out.println(account_type+"current balance is гд"+account.getBalance());
+			}
+		}
 	}
 
 }
