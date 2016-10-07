@@ -1,28 +1,33 @@
 package com.banking;
 
 public class CheckingAccount extends Account {
-	private double overdraftProtection;
 
-	public CheckingAccount(double banlance){
+	SavingAccount protectedBy = null;
+
+	public CheckingAccount(double banlance) {
 		super(banlance);
 	}
-	
-	public CheckingAccount(double balance, double overdraftProtection) {
+
+	public CheckingAccount(double balance, SavingAccount protectedBy) {
 		super(balance);
-		this.overdraftProtection = overdraftProtection;
+		this.protectedBy = protectedBy;
 	}
 
 	@Override
 	public boolean withdraw(double amt) {
-		if (this.balance+this.overdraftProtection<amt) {
-			return false;
-		} else if(this.balance>=amt){
-			this.balance-=amt;
+		if (this.balance >= amt) {
+			this.balance -= amt;
 			return true;
+		} else if (protectedBy!=null) {
+			if (this.balance+this.protectedBy.getBalance()>amt) {
+				this.protectedBy.balance-=amt-this.balance;
+				this.balance=0;
+				return true;
+			} else {
+				return false;
+			}
 		}else {
-			this.balance=0;
-			this.overdraftProtection-=amt-this.balance;
-			return true;
+			return false;
 		}
 	}
 }

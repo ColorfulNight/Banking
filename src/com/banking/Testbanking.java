@@ -1,69 +1,49 @@
 package com.banking;
 
-import java.text.NumberFormat;
 
 public class Testbanking {
 
 	public static void main(String[] args) {
-//		NumberFormat currency_format = NumberFormat.getCurrencyInstance();
 		Bank bank = new Bank();
 		Customer customer;
+		Account account;
 
-		// Create several customers and their accounts
+		// Create two customers and their accounts
 		bank.addCustomer("Jane", "Simms");
 		customer = bank.getCustomer(0);
-		customer.addAccount(new SavingAccount(500.00, 0.05));
-		customer.addAccount(new CheckingAccount(200.00, 400.00));
+		customer.setSavingAccount(new SavingAccount(500.00, 0.05));
+		customer.setCheckingAccount(new CheckingAccount(200.00, customer.getSavingAccount()));
 
 		bank.addCustomer("Owen", "Bryant");
 		customer = bank.getCustomer(1);
-		customer.addAccount(new CheckingAccount(200.00));
+		customer.setCheckingAccount(new CheckingAccount(200.00));
 
-		bank.addCustomer("Tim", "Soley");
-		customer = bank.getCustomer(2);
-		customer.addAccount(new SavingAccount(1500.00, 0.05));
-		customer.addAccount(new CheckingAccount(200.00));
+		// Test the checking account of Jane Simms (with overdraft protection)
+		customer = bank.getCustomer(0);
+		account = customer.getCheckingAccount();
+		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName() + "]"
+				+ " has a checking balance of " + customer.getCheckingAccount().getBalance() + " and a savings balance of "
+				+ customer.getSavingAccount().getBalance());
+		System.out.println("Checking Acct [Jane Simms] : withdraw 150.00 succeeds? " + account.withdraw(150.00));
+		System.out.println("Checking Acct [Jane Simms] : deposit 22.50 succeeds? " + account.deposit(22.50));
+		System.out.println("Checking Acct [Jane Simms] : withdraw 147.62 succeeds? " + account.withdraw(147.62));
+		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName() + "]"
+				+ " has a checking balance of " + account.getBalance() + " and a savings balance of "
+				+ customer.getSavingAccount().getBalance());
+		System.out.println();
 
-		bank.addCustomer("Maria", "Soley");
-		customer = bank.getCustomer(3);
-		// Maria and Tim have a shared checking account
-		customer.addAccount(bank.getCustomer(2).getAccount(1));
-		customer.addAccount(new SavingAccount(150.00, 0.05));
-
-		// Generate a report
-		System.out.println("\t\t\tCUSTOMERS REPORT");
-		System.out.println("\t\t\t================");
-
-		for (int cust_idx = 0; cust_idx < bank.getNumOfCustomers(); cust_idx++) {
-			customer = bank.getCustomer(cust_idx);
-
-			System.out.println();
-			System.out.println("Customer: " + customer.getLastName() + ", " + customer.getFirstName());
-
-			for (int acct_idx = 0; acct_idx < customer.getNumOfAccounts(); acct_idx++) {
-				Account account = customer.getAccount(acct_idx);
-				String account_type = "";
-
-				// Determine the account type
-				/***
-				 * Step 1: Use the instanceof operator to test what type of
-				 * account we have and set account_type to an appropriate value,
-				 * such as "Savings Account" or "Checking Account".
-				 ***/
-				if (account instanceof SavingAccount) {
-					account_type="\tSaving Account :";
-				} else {
-					account_type="\tChecking Account :";
-				}
-				// Print the current balance of the account
-				/***
-				 * Step 2: Print out the type of account and the balance. Feel
-				 * free to use the currency_format formatter to generate a
-				 * "currency string" for the balance.
-				 ***/
-				System.out.println(account_type+"current balance is гд"+account.getBalance());
-			}
-		}
+		// Test the checking account of Owen Bryant (without overdraft
+		// protection)
+		customer = bank.getCustomer(1);
+		account = customer.getCheckingAccount();
+		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName() + "]"
+				+ " has a checking balance of " + account.getBalance());
+		System.out.println("Checking Acct [Owen Bryant] : withdraw 100.00 succeeds? " + account.withdraw(100.00));
+		System.out.println("Checking Acct [Owen Bryant] : deposit 25.00 succeeds? " + account.deposit(25.00));
+		System.out.println("Checking Acct [Owen Bryant] : withdraw 175.00 succeeds? " + account.withdraw(175.00));
+		System.out.println("Customer [" + customer.getLastName() + ", " + customer.getFirstName() + "]"
+				+ " has a checking balance of " + account.getBalance());
+		System.out.println();
 	}
 
 }
