@@ -1,7 +1,7 @@
 package com.banking;
 
 public class Account {
-	private double balance;
+	protected double balance;
 	
 //	¥¥Ω®’Àªß
 	public Account(double init_balance) {
