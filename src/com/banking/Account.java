@@ -15,12 +15,18 @@ public class Account {
 	}
 	
 //	´æÇ®
-	public void deposit(double amt) {
+	public boolean deposit(double amt) {
 		this.balance+=amt;
+		return true;
 	}
 	
 //	È¡Ç®
-	public void withdraw(double amt) {
-		this.balance-=amt;
+	public boolean withdraw(double amt) {
+		if (this.balance>=amt) {
+			this.balance-=amt;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
