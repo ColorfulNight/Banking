@@ -21,12 +21,11 @@ public class Account {
 	}
 	
 //	取钱
-	public boolean withdraw(double amt) {
+	public void withdraw(double amt) throws OverdraftException {
 		if (this.balance>=amt) {
 			this.balance-=amt;
-			return true;
 		} else {
-			return false;
+			throw new OverdraftException("资金不足", amt - this.balance);
 		}
 	}
 }
