@@ -3,12 +3,16 @@ package com.banking;
 public class Bank {
 	private Customer[] customer;
 	private int numberOfCustomer = 0;
-
+	private static Bank bank = new Bank();
+	
 	// 构造器初始化customer数组
-	public Bank() {
+	private Bank() {
 		customer = new Customer[5];
 	}
 
+	public static Bank getBank() {
+		return bank;
+	}
 	// 添加顾客到customer数组
 	public void addCustomer(String f, String l) {
 		customer[numberOfCustomer] = new Customer(f, l);
