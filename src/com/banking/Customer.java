@@ -1,28 +1,30 @@
 package com.banking;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class Customer {
 	private String firstName;
 	private String lastName;
-	private Account[] account;
-	private int NumOfAccounts = 0;
+	private List<Account> account;
 
 	// 创建客户
 	public Customer(String firstName, String lastName) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
-		account = new Account[5];
+		account = new ArrayList<>();
 	}
 
 	// 返回指定客户账户
 	public Account getAccount(int acct_idx) {
-		return account[acct_idx];
+		return account.get(acct_idx);
 	}
 
 	// 设置客户账户
 	public void addAccount(Account account) {
-		this.account[NumOfAccounts] = account;
-		NumOfAccounts += 1;
+		this.account.add(account);
 	}
 
 	// 返回firstName
@@ -37,7 +39,9 @@ public class Customer {
 
 	// 返回账户个数
 	public int getNumOfAccounts() {
-		return NumOfAccounts;
+		return account.size();
 	}
-
+	public Iterator<Account> getAccounts() {
+		return account.iterator();
+	}
 }

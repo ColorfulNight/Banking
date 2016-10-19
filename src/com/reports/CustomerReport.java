@@ -1,5 +1,6 @@
 package com.reports;
 
+import java.util.Iterator;
 import com.banking.Account;
 import com.banking.Bank;
 import com.banking.Customer;
@@ -9,20 +10,20 @@ public class CustomerReport {
 
 	public void generateReport() {
 		Bank bank = Bank.getBank();
-		Customer customer;
-
+		Iterator<Customer> iterator = bank.getCustomers();
+		Iterator<Account> accountIterator;
 		// Generate a report
 		System.out.println("\t\t\tCUSTOMERS REPORT");
 		System.out.println("\t\t\t================");
 
-		for (int cust_idx = 0; cust_idx < bank.getNumOfCustomers(); cust_idx++) {
-			customer = bank.getCustomer(cust_idx);
-
+		while (iterator.hasNext()) {
+			Customer customer = iterator.next();
+			accountIterator = customer.getAccounts();
 			System.out.println();
 			System.out.println("Customer: " + customer.getLastName() + ", " + customer.getFirstName());
 
-			for (int acct_idx = 0; acct_idx < customer.getNumOfAccounts(); acct_idx++) {
-				Account account = customer.getAccount(acct_idx);
+			while (accountIterator.hasNext()) {
+				Account account = (Account) accountIterator.next();
 				String account_type = "";
 
 				// Determine the account type
